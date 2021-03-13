@@ -51,6 +51,7 @@ class RoamPrivateApi {
 	 * @param {uid} uid - parent UID where block has to be inserted.
 	 */
 	async createBlock( text, uid ) {
+	
 		const result = await this.page.evaluate( ( text, uid ) => {
 			if ( ! window.roamAlphaAPI ) {
 				return Promise.reject( 'No Roam API detected' );
@@ -192,18 +193,23 @@ class RoamPrivateApi {
 		try {
 			this.page = await this.browser.newPage();
 			this.page.setDefaultTimeout( 60000 );
-			await this.page.goto( 'https://roamresearch.com/#/app/' + this.db );
-			await this.page.waitForNavigation();
+			console.log("opening login page");
+			await this.page.goto( 'https://roamresearch.com/#/signin');
+			//await this.page.waitForNavigation();
 			await this.page.waitForSelector( 'input[name=email]' );
+			console.log("login loaded");
 		} catch ( e ) {
 			console.error( 'Cannot load the login screen!' );
 			throw e;
 		}
 		// Login
+		console.log("logging in");
 		await this.page.type( 'input[name=email]', this.login );
 		await this.page.type( 'input[name=password]', this.pass );
 		await this.page.click( '.bp3-button' );
-		await this.page.waitForSelector( '.bp3-icon-more' );
+		await this.page.goto('https://roamresearch.com/#/app/' + this.db);
+		await this.page.waitForSelector(".rm-db-title");
+		console.log("Logged in to: " + this.page.$(".rm-db-title"));
 		return;
 	}
 

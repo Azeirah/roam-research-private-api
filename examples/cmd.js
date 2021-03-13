@@ -109,6 +109,8 @@ const argv = yargs
 			const RoamPrivateApi = require( '../' );
 			const api = new RoamPrivateApi( argv.graph, argv.email, argv.password, {
 				headless: ! argv.debug,
+            			executablePath: process.env.CHROMIUM_PATH,
+				args: ['--no-sandbox']
 			} );
 
 			if ( ! argv['parentuid'] ) {
